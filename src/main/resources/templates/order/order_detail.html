@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<header>
+	<div th:replace = "common/header :: header"></div>
+	</header>
+
+	<div>受け取り場所</div>
+	
+	<table>
+	<tr>
+		<th>名前：</th>
+		<th>住所：</th>
+		<th>アパート名等：</th>
+	</tr>
+	<tr>
+		<td th:text = "${login.name}"></td>
+		<td th:text = "${login.address}"></td>
+		<td th:text = "${login.apartment}"></td>
+	</tr>
+	</table>
+	
+	<table>
+	<div>お支払い情報</div>
+	<tr>
+		<th>カード番号</th>
+		<th>有効期限</th>
+	</tr>
+	
+	<tr th:each = "card : ${login.cards}">
+		<td th:text = "${card.cardNumberMasked}">**** **** **** 1234</td>
+		<td th:text = "${card.expiration}">2026-07</td>
+	</tr>
+	</table>
+
+	<form method = "post" th:action = "@{/order/check}">
+	  <input type = "submit" value = "確認">
+	</form>
+</body>
+</html>

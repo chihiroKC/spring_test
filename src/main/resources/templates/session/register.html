@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<div>ユーザー新期登録画面</div>
+		<div th:text = "${userId}"></div>
+		<form method = "post" th:action = "@{/doRegister}">
+			ユーザー名<input type = "text" name = "name">
+			メールアドレス<input type = "email" name = "email">
+			パスワード<input type = "password" name = "password">
+			パスワード確認<input type = "password" name = "confirmPassword">
+			<input type = "submit" value = "登録">
+			<a href = "/spring/login">戻る</a>
+		</form>
+</body>
+</html>

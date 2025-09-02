@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>マイページ</title>
+</head>
+<body>
+	<header>
+	<div th:replace = "common/header :: header"></div>
+	</header>
+
+	<h1>マイページ</h1>
+	
+	<table>
+		<tr>
+			<th>名前</th>
+			<td th:text = "${user.userName}">名前</td>
+		</tr>
+		<tr>
+			<th>名前(ひらがな)</th>
+			<td th:text = "{user.userKana}">ひらがな</td>
+		</tr>
+		<tr>
+			<th>電話番号</th>
+			<td th:text = "${user.phone != null ? user.phone : ''}"></td>
+		</tr>
+	</table>
+</body>
+</html>

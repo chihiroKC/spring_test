@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>セール商品一覧画面</title>
+</head>
+<body>
+	<header>
+	<div th:replace = "common/header :: header"></div>
+	</header>
+
+	<div>セール商品一覧画面</div>
+	<table>
+		　<tr>	
+			<th>画像</th>
+			<th>商品名：</th>
+			<th>メーカー名：</th>
+			<th>価格：</th>
+		 </tr>	
+		 <tr th:each = "sale:${sales}">
+			<td>
+				<a th:href = "@{/sales/discount(saleItemId = ${sale.saleItemId})}">
+			     <img th:src = "@{${sale.saleImgPath}}" alt = "商品画像" width = "100">
+				</a>
+			</td>
+			<td th:text = "${sale.name}"></td>
+			<td th:text = "${sale.company != null ? sale.company.companyName: ''}"></td>
+			<td th:text = "${sale.discountedPrice}"></td>
+		 </tr>
+		</table>
+</body>
+</html>

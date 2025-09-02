@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<header>
+	<div th:replace = "common/header :: header"></div>
+	</header>
+
+	<div>商品詳細画面</div>
+	<table>
+	　<tr>	
+		<th>商品画像</th>
+		<th>商品名：</th>
+		<th>メーカー名：</th>
+		<th>価格：</th>
+		<th>税込価格：</th>
+		<th>在庫数：</th>
+	 </tr>	
+	 <tr>
+		<td>
+			<img th:src = "@{${product.imgPath}}" alt = "商品画像" width = "100"></img>
+		</td>
+		<td th:text = "${product.name}"></td>
+		<td th:text = "${product.company.companyName}"></td>
+		<td th:text = "${product.price}"></td>
+		<td th:text = "${product.taxPrice}"></td>
+		<td th:text = "${product.stock}"></td>
+	 </tr>
+	</table>
+	<h1>口コミ</h1>
+	<div>ユーザー名：</div>
+	<div>コメント：</div>
+	<div>評価：</div>
+	<div>投稿日時</div>
+	
+	<form th:action = "@{/reviews/new/{productId}(productId = ${product.productId})}" method = "post">
+	<input type = "submit" value = "口コミ投稿">
+	</form>
+	
+	
+	<form th:action = "@{/order/cart_add}" method = "post">
+		<input type = "hidden" name = "productId" th:value = "${product.productId}" />
+		<input type = "hidden" name = "quantity" value = "1" />
+	    <input type = "submit" value = "カートに追加">
+	</form>
+	
+	<form th:action="@{/order/single_purchase}" method="post">
+		<input type  = "hidden" name = "productId" th:value = "${product.productId}" />
+	  <label for="quantity">数量を選択:</label>
+	  <select name="quantity" id="quantity">
+	    <option value="1">1</option>
+	    <option value="2">2</option>
+	    <option value="3">3</option>
+	    <option value="4">4</option>
+	    <option value="5">5</option>
+	  </select>
+	  
+	  <input type = "submit" value = "単品購入">
+	  </form>
+	  
+	  <script th:inline = "javascript">
+	    const price = [[${product.price}]];
+		const taxPrice = [[${product.tax_price}]];
+	    const stock = [[${product.stock}]];
+		console.log("価格：", price);
+		console.log("税込価格：", taxPrice);
+		console.log("在庫数：", stock);
+	  </script>
+	  
+</body>
+</html>

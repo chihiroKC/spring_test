@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>カート詳細画面</title>
+</head>
+<body>
+	<header>
+	<div th:replace = "common/header :: header"></div>
+	</header>
+	
+	<table>
+		<tr>
+			<th>商品画像：</th>
+			<th>商品名：</th>
+			<th>個数：</th>
+			<th>消費税込み金額：</th>
+		</tr>
+		<tr th:each = "order : ${orders}">
+			<td><img th:if = "${order.product != null}" th:src = "@{${order.product.imgPath}}" alt = "商品画像" width = "100"></td>
+			<td th:text = "${order.product != null ? order.product.name : '不明な商品'}"></td>
+			<td th:text = "${order.product.name}"></td>
+			<td>
+				<span th:text = "${order.quantity}"></span>
+				<form th:action = "@{/order/remove}" method = "post" style = "display:inline;">
+					<input type = "hidden" name = "orderId" th:value = "${order.orderId}">
+					<input type = "number" name = "removeQuantity" min = "1" max = "${order.quantity}" value = "1"> 
+					<button type = "submit">削除</button>
+				</form>
+			</td>
+			<td th:text="${order.totalAmountWithTax}"></td>
+		</tr>
+	</table>
+	
+	<form th:action = "@{/order/check}" method = "get">
+		<button type = "submit">レジに進む</button>
+	</form>
+	
+</body>
+</html>

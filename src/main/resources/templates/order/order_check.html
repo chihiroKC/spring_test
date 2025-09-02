@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>購入確認</title>
+</head>
+<body>
+	<header>
+	<div th:replace = "common/header :: header"></div>
+	</header>
+
+	<div>購入確認画面</div>
+	<table>
+	<tr>
+		<th>名前：</th>
+		<td th:text = "${login.name}"></td>
+	</tr>
+	<tr>
+		<th>住所：</th>
+		<td th:text = "${login.address}"></td>
+	</tr>
+	<tr>
+		<th>アパート名：</th>
+		<td th:text = "${login.apartment}"></td>
+	</tr>
+	<tr>
+		<th>商品名：</th>
+		<th>個数：</th>
+		<th>合計金額：</th>
+	</tr>
+	<tr th:each = "order : ${orders}">
+		<td th:text = "${order.displayName}"></td>
+		<td th:text = "${order.quantity}"></td>
+		<td th:text = "${order.totalAmount}"></td>
+	</tr>
+	</table>
+	
+	<br>
+	
+	<form th:action = "@{/order/order_detail}" method = "get" style = "display:inline;">
+		<button type = "submit">編集</button>
+	</form>
+
+	<form th:action = "@{/order/complete}" method="post" style="display:inline;">
+	    <button type="submit">購入</button>
+	</form>
+	
+</body>
+</html>

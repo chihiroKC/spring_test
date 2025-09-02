@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<header>
+	<div th:replace = "common/header :: header"></div>
+	</header>
+
+	<h1>商品一覧画面</h1>
+	
+	<div th:if = "${searchResults != null}">
+		<h2>検索結果</h2>
+		<table>
+			<tr>
+				<th>画像</th>
+				<th>商品名：</th>
+				<th>メーカー名：</th>
+				<th>価格：</th>
+				<th>税込価格：</th>
+			</tr>
+			<tr th:each="product : ${searchResults}">
+			    <td>
+			        <a th:href="@{/product/detail/{id}(id=${product.productId})}">
+			           <img th:src="@{${product.imgPath}}" alt="商品画像" width="100">
+			        </a>
+			    </td>
+			    <td th:text="${product.name}"></td>
+			    <td th:text="${product.company.companyName}"></td>
+			    <td th:text="${product.price}"></td>
+			    <td th:text="${product.taxPrice}"></td>
+			</tr>
+		</table>
+	</div>
+	
+	<div th:if = "${searchResults == null}">
+	    <h2>全商品</h2>
+	    <table>
+		 <tr>	
+			<th>画像</th>
+			<th>商品名：</th>
+			<th>メーカー名：</th>
+			<th>価格：</th>
+			<th>税込価格：</th>
+		 </tr>	
+		 <tr th:each = "product:${products}">
+			<td>
+				<a th:href = "@{/product/detail/{id}(id = ${product.productId})}">
+			     <img th:src = "@{${product.imgPath}}" alt = "商品画像" width = "100"></img>
+				</a>
+			</td>
+			<td th:text = "${product.name}"></td>
+			<td th:text = "${product.company.companyName}"></td>
+			<td th:text = "${product.price}"></td>
+			<td th:text = "${product.taxPrice}"></td>
+		 </tr>
+		</table>
+	</div>
+</body>
+</html>
