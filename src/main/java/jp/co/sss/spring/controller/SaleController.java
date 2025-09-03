@@ -10,7 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jp.co.sss.spring.entity.Product;
+import jp.co.sss.spring.entity.Review;
 import jp.co.sss.spring.entity.Sale;
+import jp.co.sss.spring.repository.ReviewRepository;
 import jp.co.sss.spring.repository.SaleRepository;
 
 @Controller
@@ -18,6 +21,9 @@ public class SaleController {
 
 	@Autowired
 	SaleRepository saleRepository;
+	
+	@Autowired
+	ReviewRepository reviewRepository;
 	
 	@GetMapping("/sales/discount")
 	public String showDiscountProducts(@RequestParam("saleItemId") Integer saleItemId, Model model) {
@@ -27,8 +33,13 @@ public class SaleController {
 			return "redirect:/sales";
 		}
 		
+		Product product = sale.getProduct();
+		
+		List<Review> reviews = reviewRepository.findByProductOrderByReviewIdDesc(product);
+		
 		model.addAttribute("sale", sale);
 		model.addAttribute("product", sale.getProduct());
+		model.addAttribute("reviews", reviews);
 		return "product/discount_list_id";
 	}
 	

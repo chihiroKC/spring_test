@@ -3,10 +3,9 @@ package jp.co.sss.spring.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
-import jakarta.servlet.http.HttpSession;
-
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -23,6 +22,7 @@ import jp.co.sss.spring.repository.LoginRepository;
 import jp.co.sss.spring.repository.OrderRepository;
 import jp.co.sss.spring.repository.ProductRepository;
 import jp.co.sss.spring.repository.SaleRepository;
+import jp.co.sss.spring.security.UserDetailsImpl;
 import jp.co.sss.spring.service.OrderService;
 
 @Controller
@@ -46,19 +46,14 @@ public class OrderCheckController {
 	
 	@Transactional
 	@RequestMapping("/check")
-	public String showOrderCheck(HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("userId");
+	public String showOrderCheck(Model model) {
 		
-		if (userId == null) {
-			return "redirect:/login";
-		}
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
 		
-		Login login = loginRepository.findById(userId).orElse(null);
-		if (login == null) {
-			return "redirect:/login";
-		}
 		
-		List<Order> orders = orderRepository.findByUserIdAndStatus(userId, "NEW");
+		List<Order> orders = orderRepository.findByUserIdAndStatus(login.getUserId(), "NEW");
 		
 		model.addAttribute("login", login);
 		model.addAttribute("orders", orders);
@@ -69,19 +64,12 @@ public class OrderCheckController {
 	
 	@GetMapping("/order_detail")
 	@Transactional(readOnly = true)
-	public String editOrder( HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("userId");
+	public String editOrder(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
 		
-		if (userId == null) {
-			return "redirect:/login";
-		}
-		
-		Login login = loginRepository.findById(userId).orElse(null);
-		if (login == null) {
-			return "redirect:/login";
-		}
-		
-		List<Order> orders = orderRepository.findByUserIdAndStatus(userId, "NEW");
+		List<Order> orders = orderRepository.findByUserIdAndStatus(login.getUserId(), "NEW");
 		
 		
 		model.addAttribute("login", login);
@@ -91,18 +79,12 @@ public class OrderCheckController {
 	}
 	
 	@PostMapping("/confirm")
-	public String confirmOrder(HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("userId");
-		if (userId == null) {
-			return "redirect:/login";
-		}
+	public String confirmOrder(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
 		
-		Login login = loginRepository.findById(userId).orElse(null);
-		if (login == null) {
-			return "redirect:/login";
-		}
-		
-		List<Order> orders = orderRepository.findByUserIdAndStatus(userId, "NEW");
+		List<Order> orders = orderRepository.findByUserIdAndStatus(login.getUserId(), "NEW");
 		
 		
 		for (Order order : orders) {
@@ -121,16 +103,13 @@ public class OrderCheckController {
 	
 	@PostMapping("/complete")
 	@Transactional
-	public String orderComplete(HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("userId");
+	public String orderComplete(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
+
 		
-		if (userId == null) {
-			return "redirect:/login";		
-	}
-	
-		Login login = loginRepository.findById(userId).orElseThrow();
-		
-	List<Order> orders = orderRepository.findByUserIdAndStatus(userId, "NEW");
+	List<Order> orders = orderRepository.findByUserIdAndStatus(login.getUserId(), "NEW");
 	
 	for (Order order : orders) {
 		order.setStatus("COMPLETED");
@@ -145,21 +124,19 @@ public class OrderCheckController {
 	
 	@PostMapping("/cart_add")
 	@Transactional
-	public String showCartAdd(HttpSession session, Model model, 
+	public String showCartAdd(Model model, 
 			                  @RequestParam("productId") Integer productId, 
 			                  @RequestParam(value = "saleItemId", required = false) Integer saleItemId,
 			                  @RequestParam("quantity") Integer quantity) {
 		
-		Integer userId = (Integer) session.getAttribute("userId");
-		
-		if (userId == null) {
-			return "redirect:/login";
-		}
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
 		
 		Product product = productRepository.findById(productId).orElseThrow();
 		
 		Order order = new Order();
-		order.setUserId(userId);
+		order.setLogin(login);
 		order.setProduct(product);
 		order.setQuantity(quantity);
 
@@ -186,17 +163,12 @@ public class OrderCheckController {
 	}
 	
 	@GetMapping("/cart_detail")
-	public String showCartDetail(HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("userId");
+	public String showCartDetail(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
 		
-		if (userId == null) {
-			return "redirect:/login";		
-	}
-		Login login = loginRepository.findById(userId).orElseThrow();
-		
-		Hibernate.initialize(login.getCards());
-		
-		List<Order> orders = orderRepository.findByUserIdAndStatus(userId, "NEW");
+		List<Order> orders = orderRepository.findByUserIdAndStatus(login.getUserId(), "NEW");
 	    if (orders.isEmpty()) {
 			return "redirect:/top";
 		}

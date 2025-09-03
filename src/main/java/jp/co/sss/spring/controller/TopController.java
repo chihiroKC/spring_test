@@ -30,8 +30,10 @@ public class TopController {
 	}
 
 	@GetMapping("/top")
-	public String top(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-	    model.addAttribute("user_name", principal.getUsername()); // email が入る
+	public String top(Model model, @AuthenticationPrincipal UserDetailsImpl principal) {
+		if (principal != null) {
+			model.addAttribute("user_name", principal.getLogin().getName()); 
+		}
 	    model.addAttribute("sales", saleRepository.findAll());
 	    return "top";
 	}
@@ -39,19 +41,29 @@ public class TopController {
 	 @GetMapping(path = "/mypage")
 	 public String mypage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		 
-		 Login loginUser = userDetails.getLogin();
+		 Integer loginUserId = userDetails.getLogin().getUserId();
 		 
-		 model.addAttribute("user", loginUser);
+		 Login freshLoginUser = loginRepository.findById(loginUserId).orElse(null);
+		 
+		 model.addAttribute("user", freshLoginUser);
 		 return "mypage";
 	 }
+	 
 	 
 	 @RequestMapping(path = "/product")
 		public String product() {
 			return "product";
 		}
+	 
+	 
 	 @GetMapping("/search")
-	 public String search(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+	 public String search(@RequestParam(value = "keyword", required = false) String keyword, 
+			              Model model,
+			              @AuthenticationPrincipal UserDetailsImpl principal) {
 
+		 if(principal != null) {
+			 model.addAttribute("user_name", principal.getLogin().getName());
+		 }
 		 
 		 if (keyword != null && !keyword.isEmpty()) {
 			 List<Product> searchResults = productRepository.findByNameContaining(keyword);

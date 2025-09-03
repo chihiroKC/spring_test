@@ -1,5 +1,6 @@
 package jp.co.sss.spring.entity;
 
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -12,17 +13,20 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "users")
-public class Login {
+public class Login implements UserDetails{
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_users_gen")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_users_gen")
 	@SequenceGenerator(name = "seq_users_gen", sequenceName = "seq_users", allocationSize = 1)
 
-	@Column(name = "id")
+	@Column(name = "user_id")
 	private Integer UserId;
 	
-	@Column
+	@Column(nullable = false)
 	private String email;
 	
 	
@@ -33,7 +37,7 @@ public class Login {
 	@Column(name = "user_name_kana")
 	private String nameKana;
 	
-	@Column(name = "passwords")
+	@Column(name = "passwords", nullable = false)
 	private String password;
 	
 	@Column
@@ -51,6 +55,35 @@ public class Login {
 	@OneToMany(mappedBy = "login", fetch = FetchType.EAGER)
 	private List<Order> orders;
 	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+	
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
+	
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
 	public String getEmail() {
 		return email;

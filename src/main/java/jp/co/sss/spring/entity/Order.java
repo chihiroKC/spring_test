@@ -25,7 +25,7 @@ public class Order {
 	@Column(name = "order_id")
 	private Integer orderId;
 
-	@Column(name = "user_id")
+	@Column(name = "user_id", insertable = false, updatable = false)
 	private Integer userId;
 	
 	@Column(name = "total_amount")
@@ -35,8 +35,9 @@ public class Order {
 	private String status;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	@JoinColumn(name = "user_id")
 	private Login login;
+	
 	
 	private Integer quantity;
 	private Integer price;

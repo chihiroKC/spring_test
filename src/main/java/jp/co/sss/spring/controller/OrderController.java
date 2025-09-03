@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import jakarta.servlet.http.HttpSession;
-
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -19,6 +19,7 @@ import jp.co.sss.spring.entity.Login;
 import jp.co.sss.spring.entity.Order;
 import jp.co.sss.spring.repository.LoginRepository;
 import jp.co.sss.spring.repository.OrderRepository;
+import jp.co.sss.spring.security.UserDetailsImpl;
 import jp.co.sss.spring.service.OrderService;
 
 @Controller
@@ -35,22 +36,14 @@ public class OrderController {
 	
 	@Transactional
 	@RequestMapping("/order") 
-		public String showOrder(HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("userId");
-		
-		if (userId == null) {
-			return "redirect:/login";
-		}
-		
-		 
-		Login login = loginrepository.findById(userId).orElse(null);
-		if (login == null) {
-			return "redirect:/login";
-		}
+		public String showOrder(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
 		
 		 Hibernate.initialize(login.getCards());
 		
-		 List<Order>orders = orderrepository.findByUserIdAndStatusOrderByOrderIdDesc(userId, "NEW");
+		 List<Order>orders = orderrepository.findByUserIdAndStatusOrderByOrderIdDesc(login.getUserId(), "NEW");
 
 		model.addAttribute("orders", orders);
 		model.addAttribute("login", login);
@@ -62,18 +55,12 @@ public class OrderController {
 	public String singlePurchase(
 			@RequestParam("productId") Integer productId,
 			@RequestParam(value = "saleItemId", required = false) Integer saleItemId,
-			@RequestParam("quantity") int quantity,
-			HttpSession session) {
+			@RequestParam("quantity") int quantity
+			) {
 		
-		Integer userId = (Integer) session.getAttribute("userId");
-		if (userId == null) {
-			return "redirect:/login";
-		}
-		
-		Login login = loginrepository.findById(userId).orElse(null);
-		if (login == null) {
-			return "redirect:/login";
-		}
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+		Login login = userDetails.getLogin();
 		
 		if (saleItemId != null) {
 			orderService.createSingleOrderWithSale(productId, saleItemId, quantity, login);

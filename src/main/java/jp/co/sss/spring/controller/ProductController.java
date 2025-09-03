@@ -1,5 +1,7 @@
 package jp.co.sss.spring.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,13 +10,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jp.co.sss.spring.entity.Product;
+import jp.co.sss.spring.entity.Review;
 import jp.co.sss.spring.repository.ProductRepository;
+import jp.co.sss.spring.repository.ReviewRepository;
 
 @Controller
 public class ProductController {
 
 	@Autowired
 	ProductRepository productRepository;
+	
+	@Autowired
+	private ReviewRepository reviewRepository;
 	
 	@RequestMapping("/product/findAll")
 	public String showProductList(Model model) {
@@ -25,8 +32,16 @@ public class ProductController {
 	
 	@RequestMapping("/product/detail/{id}")
 	public String showProductDetail(@PathVariable Integer id, Model model) {
-		Product product = productRepository.findById(id).orElseThrow();
+		Product product = productRepository.findById(id).orElse(null);
+		
+		if(product == null) {
+			return "redirect:/product/list";
+		}
+		
+		List<Review> reviews = reviewRepository.findByProductOrderByReviewIdDesc(product);
+		
 		model.addAttribute("product", product);
+		model.addAttribute("reviews", reviews);
 		
 		return "product/product_list_id";
 	}

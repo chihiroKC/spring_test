@@ -20,7 +20,7 @@
 		 <tr th:each = "sale:${sales}">
 			<td>
 				<a th:href = "@{/sales/discount(saleItemId = ${sale.saleItemId})}">
-			     <img th:src = "@{${sale.saleImgPath}}" alt = "商品画像" width = "100">
+			     <img th:src = "@{${sale.saleImgPath}}" alt = "セール商品画像" width = "100">
 				</a>
 			</td>
 			<td th:text = "${sale.name}"></td>

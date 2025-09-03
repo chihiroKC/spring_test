@@ -2,17 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>新規登録</title>
 </head>
 <body>
 
 	<div>ユーザー新期登録画面</div>
 		<div th:text = "${userId}"></div>
-		<form method = "post" th:action = "@{/doRegister}">
-			ユーザー名<input type = "text" name = "name">
-			メールアドレス<input type = "email" name = "email">
-			パスワード<input type = "password" name = "password">
-			パスワード確認<input type = "password" name = "confirmPassword">
+		<form method = "post" th:action = "@{/doRegister}" th:object = "${registerForm}">
+			<div>
+			ユーザー名<input type = "text" th:field = "*{name}" />
+			<div th:if = "${#fields.hasErrors('name')}" th:errors = "*{name}"></div>
+			</div>
+			<div>
+			メールアドレス<input type = "email" th:field = "*{email}" />
+			<div th:if = "${#fields.hasErrors('email')}" th:errors = "*{email}"></div>
+			</div>
+			<div>
+			パスワード<input type = "password" th:field = "*{password}" />
+			<div th:if = "${#fields.hasErrors('password')}" th:errors = "*{password}"></div>
+			</div>
+			<div>
+			パスワード確認<input type = "password" th:field = "*{confirmPassword}" />
+			<div th:if = "${#fields.hasErrors('confirmPassword')}" th:errors = "*{confirmPassword}"></div>
+			</div>
 			<input type = "submit" value = "登録">
 			<a href = "/spring/login">戻る</a>
 		</form>

@@ -30,11 +30,37 @@
 		<td th:text = "${product.stock}"></td>
 	 </tr>
 	</table>
+	
+	<hr>
 	<h1>口コミ</h1>
-	<div>ユーザー名：</div>
-	<div>コメント：</div>
-	<div>評価：</div>
-	<div>投稿日時</div>
+	
+	<div th:if = "${#lists.isEmpty(reviews)}">
+		<p>この商品の口コミはまだありません。</p>
+	</div>
+	
+	
+	<div th:unless = "${#lists.isEmpty(reviews)}">
+		<div th:each = "review : ${reviews}">
+            <div>
+			     <strong>ユーザー名：</strong>
+			     <span th:text = "${review.dummyUserName}"></span>
+			</div>
+			<div>
+				<strong>評価：</strong>
+				<span th:each = "i:${#numbers.sequence(1,review.rating)}">★</span>
+				<span th:each = "i:${#numbers.sequence(review.rating + 1,5)}">★</span>
+			</div>
+			<div>
+				<strong>コメント：</strong>
+				<p th:text = "${review.comment}"></p>
+			</div>
+			<div>
+				<strong>投稿日時</strong>
+				<span th:text = "${#temporals.format(review.createdAt,'yyyy/MM/dd HH:mm')}"></span>
+			</div>
+		</div>
+	</div>
+	<hr>
 	
 	<form th:action = "@{/reviews/new/{productId}(productId = ${product.productId})}" method = "post">
 	<input type = "submit" value = "口コミ投稿">

@@ -10,23 +10,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import jp.co.sss.spring.security.UserDetailsServiceImpl;
-
 @Configuration
 public class SecurityConfig {
-	
-	private final UserDetailsService userDetailsService;
-
-	
-	public SecurityConfig(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder) {
-	    this.userDetailsService = userDetailsService;
-    }
 	
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
     http
     .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/register", "/doRegister", "/css/**").permitAll() // 新規登録画面は認証不要
+            .requestMatchers(
+            		"/register", "/doRegister", 
+            		"/login", "/doLogin",
+            		"/css/**","/js/**"
+            	).permitAll() 
+            .requestMatchers("/order/**").authenticated()
             .anyRequest().authenticated() 
         )
         .formLogin(form -> form
@@ -49,10 +45,10 @@ public class SecurityConfig {
   }
   
   @Bean
-  public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
+  public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
 	  DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 	  provider.setUserDetailsService(userDetailsService);
-	  provider.setPasswordEncoder(passwordEncoder());
+	  provider.setPasswordEncoder(passwordEncoder);
 	  
 	  return provider;
   }

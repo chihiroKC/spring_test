@@ -1,5 +1,7 @@
 package jp.co.sss.spring.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 
 @Entity
 @Table(name = "reviews")
@@ -37,6 +42,10 @@ public class Review {
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
+	
+	@CreationTimestamp
+	@Column(name = "created_at", updatable = false)
+	private LocalDateTime createdAt;
 
 	public Integer getReviewId() {
 		return reviewId;
@@ -94,6 +103,15 @@ public class Review {
 		this.product = product;
 	}
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	
 }
 	
 	

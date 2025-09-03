@@ -1,5 +1,6 @@
 package jp.co.sss.spring.form;
 
+
 public class LoginForm {
 
 	private String email;

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>トップ画面</title>
 </head>
 <body>
   <header>
@@ -14,7 +14,7 @@
 	<div class = "sales-gallery">
 		<div th:each = "s : ${sales}">
 			<a th:href = "@{/sales/discount(saleItemId = ${s.saleItemId})}">
-				<img th:src = "@{${s.saleImgPath}}" alt = "セール商品" width = "200">
+				<img th:src = "@{${s.saleImgPath}}" alt = "セール商品画像" width = "200">
 			</a>
 		</div>
 	</div>

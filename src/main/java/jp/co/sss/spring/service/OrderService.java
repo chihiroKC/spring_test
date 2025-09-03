@@ -33,7 +33,7 @@ public class OrderService {
 		Product product = productRepository.findById(productId.intValue()).orElseThrow();
 		
 		Order order = new Order();
-		order.setUserId(login.getUserId());
+		order.setLogin(login);
 		order.setProduct(product);
 		order.setQuantity(quantity);
 		
@@ -52,7 +52,7 @@ public class OrderService {
 		Sale sale = saleRepository.findById(saleItemId).orElseThrow();
 		
 		Order order = new Order();
-		order.setUserId(login.getUserId());
+		order.setLogin(login);
 		order.setProduct(product);
 		order.setSale(sale);
 		order.setQuantity(quantity);

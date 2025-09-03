@@ -58,5 +58,9 @@
 		 </tr>
 		</table>
 	</div>
+	
+	<div th:if = "${#lists.isEmpty(searchResults)}">
+		<p>該当する商品が見つかりません。</p>
+	</div>
 </body>
 </html>
