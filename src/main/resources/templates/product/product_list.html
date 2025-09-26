@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
 	<header>
@@ -11,56 +14,48 @@
 
 	<h1>商品一覧画面</h1>
 	
-	<div th:if = "${searchResults != null}">
-		<h2>検索結果</h2>
-		<table>
-			<tr>
-				<th>画像</th>
-				<th>商品名：</th>
-				<th>メーカー名：</th>
-				<th>価格：</th>
-				<th>税込価格：</th>
-			</tr>
-			<tr th:each="product : ${searchResults}">
-			    <td>
-			        <a th:href="@{/product/detail/{id}(id=${product.productId})}">
-			           <img th:src="@{${product.imgPath}}" alt="商品画像" width="100">
-			        </a>
-			    </td>
-			    <td th:text="${product.name}"></td>
-			    <td th:text="${product.company.companyName}"></td>
-			    <td th:text="${product.price}"></td>
-			    <td th:text="${product.taxPrice}"></td>
-			</tr>
-		</table>
-	</div>
+	<div class = "product-list-container">
+		<div th:if = "${searchResults != null}">
+			<h2>検索結果</h2>
+			
+			<p th:if = "${#lists.isEmpty(searchResults)}">該当する商品が見つかりません。</p>
+			
+			<div class = "product-grid" th:unless = "${#lists.isEmpty(searchResults)}">
+				<div class = "product-card" th:each = "product:${searchResults}">
+					<a th:href = "@{/product/detail/{id}(id = ${product.productId})}">
+						<img th:src = "@{${product.imgPath}}" alt = "商品画像" class = "product-image">
+						<div class = "product-info">
+							<p class = "product-name" th:text = "${product.name}"></p>
+							<p class = "company-name" th:text = "${product.company.companyName}"></p>
+							<p class = "product-price" th:text = "|&yen; ${#numbers.formatInteger(product.price, 1, 'COMMA')}|"></p>
+							<p class = "product-tax-price" th:text = "|&yen; ${#numbers.formatInteger(product.taxPrice, 1, 'COMMA')}(税込)|"></p>
+						</div>
+					</a>
+				</div>
+			</div>
+	    </div>
+		
+		<div th:if = "${searchResults == null}">
+			<h2>全商品</h2>
+			<div class  = "product-grid">
+				<div class = "product-card" th:each = "product:${products}">
+					<a th:href = "@{/product/detail/{id}(id = ${product.productId})}">
+						<img th:src = "@{${product.imgPath}}" alt = "商品画像" class = "product-image">
+						<div class = "product-info">
+							<p class = "product-name" th:text = "${product.name}"></p>
+							<p class = "company-name" th:text = "${product.company.companyName}"></p>
+							<p class = "product-price" th:text = "|価格：&yen;${#numbers.formatInteger(product.price, 1, 'COMMA')}|"></p>
+							<p class = "product-tax-price" th:text = "|税込：&yen;${#numbers.formatInteger(product.taxPrice, 1, 'COMMA')}|"></p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+    </div>
+
 	
-	<div th:if = "${searchResults == null}">
-	    <h2>全商品</h2>
-	    <table>
-		 <tr>	
-			<th>画像</th>
-			<th>商品名：</th>
-			<th>メーカー名：</th>
-			<th>価格：</th>
-			<th>税込価格：</th>
-		 </tr>	
-		 <tr th:each = "product:${products}">
-			<td>
-				<a th:href = "@{/product/detail/{id}(id = ${product.productId})}">
-			     <img th:src = "@{${product.imgPath}}" alt = "商品画像" width = "100"></img>
-				</a>
-			</td>
-			<td th:text = "${product.name}"></td>
-			<td th:text = "${product.company.companyName}"></td>
-			<td th:text = "${product.price}"></td>
-			<td th:text = "${product.taxPrice}"></td>
-		 </tr>
-		</table>
-	</div>
-	
-	<div th:if = "${#lists.isEmpty(searchResults)}">
-		<p>該当する商品が見つかりません。</p>
-	</div>
+	<footer>
+		<div th:replace = "common/footer :: footer"></div>
+	</footer>
 </body>
 </html>

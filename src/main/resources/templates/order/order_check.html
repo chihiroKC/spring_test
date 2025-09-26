@@ -3,47 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <title>購入確認</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
-	<header>
 	<div th:replace = "common/header :: header"></div>
-	</header>
 
-	<div>購入確認画面</div>
-	<table>
-	<tr>
-		<th>名前：</th>
-		<td th:text = "${login.name}"></td>
-	</tr>
-	<tr>
-		<th>住所：</th>
-		<td th:text = "${login.address}"></td>
-	</tr>
-	<tr>
-		<th>アパート名：</th>
-		<td th:text = "${login.apartment}"></td>
-	</tr>
-	<tr>
-		<th>商品名：</th>
-		<th>個数：</th>
-		<th>合計金額：</th>
-	</tr>
-	<tr th:each = "order : ${orders}">
-		<td th:text = "${order.displayName}"></td>
-		<td th:text = "${order.quantity}"></td>
-		<td th:text = "${order.totalAmount}"></td>
-	</tr>
-	</table>
-	
-	<br>
-	
-	<form th:action = "@{/order/order_detail}" method = "get" style = "display:inline;">
-		<button type = "submit">編集</button>
-	</form>
+	<div class = "order-check-container">
+		<h1>購入確認画面</h1>
+		
+		<section>
+			<div class = "info-item">
+				<span class = "info-label">名前：</span>
+				<span class = "info-value" th:text = "${login.name}"></span>
+			</div>
+			
+			<div class = "info-item">
+				<span class = "info-label">住所：</span>
+				<span class = "info-value" th:text = "${login.address}"></span>
+			</div>
+			
+			<div class = "info-item">
+				<span class = "info-label">アパート名：</span>
+				<span class = "info-value" th:text = "${login.apartment}"></span>
+			</div>
+		</section>
+		
+		<section>
+			<div class = "order-item-card" th:each = "order : ${orders}">
+				<div class = "info-item">
+					<span class = "info-label">商品名：</span>
+					<span class = "info-value" th:text = "${order.displayName}"></span>
+				</div>
+				
+				<div class = "info-item">
+					<span class = "info-label">個数：</span>
+					<span class = "info-value" th:text = "${order.quantity}"></span>
+				</div>
+				
+				<div class = "info-item">
+					<span class = "info-label">商品金額：</span>
+					<span class = "info-value" th:text = "${#numbers.formatInteger(order.totalAmount, 1, 'COMMA')}"></span>
+				</div>
+			</div>
+		</section>
+		
+		<section class = "order-total-summary">
+			<div class = "info-item">
+				<span class = "info-label">合計金額:</span>
+				<span class = "info-value" th:text = "'¥' + ${#numbers.formatInteger(cartTotalPrice, 1, 'COMMA')}"></span>
+			</div>
+		</section>
+		
+		<div class = "order-check-actions">
+			<form th:action = "@{/order/order_detail}" method="get">
+				<button type = "submit" class = "btn btn-danger">編集</button>
+			</form>
+			
+			<form th:action = "@{/order/complete}" method="post">
+				<button type = "submit" class = "btn btn-primary">購入</button>
+			</form>
+		</div>
+	</div>
 
-	<form th:action = "@{/order/complete}" method="post" style="display:inline;">
-	    <button type="submit">購入</button>
-	</form>
-	
+		<div th:replace = "common/footer :: footer"></div>
 </body>
 </html>

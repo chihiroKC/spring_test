@@ -3,24 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <title>トップ画面</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
-  <header>
-	<div th:replace = "common/header :: header"></div>
-  </header>
+
+  <div th:replace = "common/header :: header"></div>
+ 
   <main>
-    <div>TOP画面</div>
-	<div>セール品</div>
+    <h1>TOP画面</h1>
+	<h2 class = "sale-name">セール品</h2>
 	<div class = "sales-gallery">
-		<div th:each = "s : ${sales}">
-			<a th:href = "@{/sales/discount(saleItemId = ${s.saleItemId})}">
-				<img th:src = "@{${s.saleImgPath}}" alt = "セール商品画像" width = "200">
+			<a th:each = "s : ${sales}" th:href = "@{/sales/discount(saleItemId = ${s.saleItemId})}">
+				<img th:src = "@{${s.saleImgPath}}" alt = "セール商品画像">
 			</a>
-		</div>
 	</div>
   </main>
-  <footer>
-	
-  </footer>
+ 
+  	<div th:replace = "common/footer :: footer"></div>
+
 </body>
 </html>

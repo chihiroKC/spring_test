@@ -22,7 +22,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 権限を使わない場合は空リスト
+     
         return Collections.emptyList();
     }
 
@@ -33,7 +33,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login.getEmail();  // ログインIDとしてメールを利用
+        return login.getEmail(); 
     }
 
     @Override

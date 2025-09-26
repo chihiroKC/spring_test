@@ -2,7 +2,7 @@ package jp.co.sss.spring.controller;
 
 import jakarta.validation.Valid;
 
-import org.springframework.security.crypto.password.PasswordEncoder; // ← これを追加！
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,7 +31,7 @@ public class SessionController {
 	//新期登録
 	@RequestMapping(path = "/register", method = RequestMethod.GET)
 	public String doRegister(@ModelAttribute RegisterForm form) {
-		return "/session/register";
+		return "session/register";
 	}
 	
 	@PostMapping(path = "/doRegister")
@@ -52,7 +52,7 @@ public class SessionController {
 		user.setEmail(form.getEmail());
 		user.setPassword(passwordEncoder.encode(form.getPassword()));
 
-		user.setPhone(form.getPhone());
+		user.setPhone("");
 		
 		loginService.registerUser(user);
 		

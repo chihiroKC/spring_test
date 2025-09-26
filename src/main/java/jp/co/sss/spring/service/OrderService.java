@@ -27,6 +27,9 @@ public class OrderService {
 	@Autowired
 	private SaleRepository saleRepository;
 	
+	@Autowired
+	private SaleService saleService;
+	
 	
 	@Transactional
 	public void createSingleOrder(Integer productId, int quantity, Login login) {
@@ -57,10 +60,10 @@ public class OrderService {
 		order.setSale(sale);
 		order.setQuantity(quantity);
 		
-		BigDecimal discounted = sale.getDiscountedPrice();
-		BigDecimal total = discounted.multiply(BigDecimal.valueOf(quantity));
+		BigDecimal discountedPrice = saleService.calculateDiscountedPrice(sale);
+		int totalAmount = discountedPrice.multiply(BigDecimal.valueOf(quantity)).intValue();
 		
-		order.setTotalAmount(total.intValue());
+		order.setTotalAmount(totalAmount);
 		order.setStatus("NEW");
 		
 		order.setDisplayName(sale.getName());

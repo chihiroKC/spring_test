@@ -43,8 +43,13 @@ public class OrderController {
 		
 		 Hibernate.initialize(login.getCards());
 		
-		 List<Order>orders = orderrepository.findByUserIdAndStatusOrderByOrderIdDesc(login.getUserId(), "NEW");
+		 List<Order>orders = orderrepository.findByLoginUserIdAndStatusOrderByOrderIdDesc(login.getUserId(), "NEW");
 
+		 int cartTotalPrice = orders.stream()
+				         .mapToInt(Order::getTotalAmount)
+				         .sum();
+		 
+		model.addAttribute("cartTotalPrice", cartTotalPrice);
 		model.addAttribute("orders", orders);
 		model.addAttribute("login", login);
 		
@@ -68,7 +73,7 @@ public class OrderController {
 			orderService.createSingleOrder(productId, quantity, login);
 		}
 		
-		return "redirect:/order";
+		return "redirect:/order/order_detail";
 	}
 	
 	@PostMapping("/order/remove")
@@ -93,6 +98,6 @@ public class OrderController {
 		}else {
 			orderrepository.delete(order);
 		}
-		return "redirect:/order";
+		return "redirect:/order/cart_detail";
 	}
 }

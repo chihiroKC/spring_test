@@ -1,8 +1,5 @@
 package jp.co.sss.spring.entity;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -82,17 +79,5 @@ public class Sale {
 		this.product = product;
 	}
 
-	public BigDecimal getDiscountedPrice() {
-		if (product == null || product.getPrice() == null) {
-			return null;
-		}
-		if (discountRate == null || discountRate <= 0) {
-			return BigDecimal.valueOf(product.getPrice());
-		}
-		BigDecimal price = BigDecimal.valueOf(product.getPrice());
-		BigDecimal discount = BigDecimal.valueOf(discountRate)
-				.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
-		BigDecimal discounted = price.multiply(BigDecimal.ONE.subtract(discount));
-		return discounted.setScale(0, RoundingMode.FLOOR);
-	}
+
 }

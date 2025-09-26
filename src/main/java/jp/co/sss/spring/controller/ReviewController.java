@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jp.co.sss.spring.entity.Login;
 import jp.co.sss.spring.entity.Product;
 import jp.co.sss.spring.entity.Review;
+import jp.co.sss.spring.form.ReviewForm;
 import jp.co.sss.spring.repository.LoginRepository;
 import jp.co.sss.spring.repository.ProductRepository;
 import jp.co.sss.spring.repository.ReviewRepository;
@@ -71,15 +72,19 @@ public class ReviewController {
 				e.printStackTrace();
 			}
 		}
+		
 		reviewrepository.save(review);
 		
-		return "redirect:/product/" + productId;
+		return "redirect:/product/findAll";
 	}
 	@PostMapping("/reviews/new/{productId}")
 	public String showReviewForm(@PathVariable Integer productId, Model model) {
 		
 		System.out.println("productID:get" + productId);
+		
 		model.addAttribute("productId", productId);
+		model.addAttribute("reviewForm", new ReviewForm());
+		
 		return "review";
 	}
 }

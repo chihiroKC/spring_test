@@ -9,8 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -19,13 +19,13 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "reviews")
 public class Review {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_reviews_gen")
-	@SequenceGenerator(name = "seq_reviews_gen", sequenceName = "seq_reviews", allocationSize = 1)
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer reviewId;
 	
 	private Integer rating;
 	
+	@Column
+	@Size(max = 300, message = "コメントは300文字以内で入力してください。")
 	private String comment;
 	
 	@Column(name = "dummy_user_name")
@@ -34,7 +34,6 @@ public class Review {
 	@Column(name = "review_img_path")
 	private String reviewImgPath;
 
-	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private Login login;

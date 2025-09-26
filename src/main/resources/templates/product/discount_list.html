@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>セール商品一覧画面</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
 	<header>
@@ -28,5 +31,9 @@
 			<td th:text = "${sale.discountedPrice}"></td>
 		 </tr>
 		</table>
+		
+		<footer>
+			<div th:replace = "common/footer :: footer"></div>
+		</footer>
 </body>
 </html>

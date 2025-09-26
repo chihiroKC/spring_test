@@ -10,4 +10,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>{
 
 	List<Product> findByNameContaining(String keyword);
 	
+	List<Product> findByCategoryCategoryId(Integer categoryId);
+	
+	List<Product> findByCategoryCategoryIdAndNameContaining(Integer categoryId, String keyword);
 }

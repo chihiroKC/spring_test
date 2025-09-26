@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -20,11 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "users")
 public class Login implements UserDetails{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_users_gen")
-	@SequenceGenerator(name = "seq_users_gen", sequenceName = "seq_users", allocationSize = 1)
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
-	private Integer UserId;
+	private Integer userId;
 	
 	@Column(nullable = false)
 	private String email;
@@ -135,10 +132,10 @@ public class Login implements UserDetails{
 		this.orders = orders;
 	}
 	public Integer getUserId() {
-		return UserId;
+		return userId;
 	}
 	public void setUserId(Integer userId) {
-		UserId = userId;
+		this.userId = userId;
 	}
 	public String getNameKana() {
 		return nameKana;

@@ -3,98 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
-<body>
+<body
+ th:data-price = "${product.price}"
+ th:data-tax-price = "${product.taxPrice}"
+ th:data-stock = "${product.stock}">
+ 
 	<header>
 	<div th:replace = "common/header :: header"></div>
 	</header>
 
-	<div>商品詳細画面</div>
-	<table>
-	　<tr>	
-		<th>商品画像</th>
-		<th>商品名：</th>
-		<th>メーカー名：</th>
-		<th>価格：</th>
-		<th>税込価格：</th>
-		<th>在庫数：</th>
-	 </tr>	
-	 <tr>
-		<td>
-			<img th:src = "@{${product.imgPath}}" alt = "商品画像" width = "100"></img>
-		</td>
-		<td th:text = "${product.name}"></td>
-		<td th:text = "${product.company.companyName}"></td>
-		<td th:text = "${product.price}"></td>
-		<td th:text = "${product.taxPrice}"></td>
-		<td th:text = "${product.stock}"></td>
-	 </tr>
-	</table>
-	
-	<hr>
-	<h1>口コミ</h1>
-	
-	<div th:if = "${#lists.isEmpty(reviews)}">
-		<p>この商品の口コミはまだありません。</p>
+	<div class = "page-container">
+		
+		<main class = "main-content">
+			<h1>商品詳細画面</h1>
+			
+			<section class = "product-detail-section">
+				<div class = "product-image-wrapper">
+					<img th:src = "@{${product.imgPath}}" alt = "商品画像" class = "product-image-large">
+				</div>
+				
+				<div class = "product-inf-wrapper">
+					<h2 class = "product-name-detail" th:text = "${product.name}">商品名</h2>
+					<p class = "company-name-detail" th:text = "${product.company.companyName}">メーカー名</p>
+				    <div class = "price-info">
+					  <span class = "product-price-detail" th:text = "'&yen;' + ${#numbers.formatInteger(product.price, 1, 'COMMA')}"></span><br>
+					  <span class = "product-tax-price-detail" th:text = "'税込価格：&yen;' + ${#numbers.formatInteger(product.taxPrice, 1,'COMMA')}"></span>
+				    </div>
+					
+					  <p class = "stock-info" th:text = "|在庫数：${product.stock}|">在庫数</p> 
+			</section>	
+				  
+			<section class = "review-section">
+				<h2>＜口コミ＞</h2>
+				<div th:if = "${#lists.isEmpty(reviews)}">
+					<p>この商品の口コミはまだありません。</p>
+			    </div>
+					  	
+				<div th:unless = "${#lists.isEmpty(reviews)}">
+					<div class = "review-item" th:each = "review:${reviews}">
+					    <div class = "review-header">
+							<div class = review-item-detail>
+					  		<p>ユーザー名：<span th:text = "${review.dummyUserName}">ユーザー名：</span></p>
+							<p class = "review-date" th:text  = "${#temporals.format(review.createdAt, 'yyyy/MM/dd HH:mm')}">投稿日時：</p>
+							</div>
+							
+							<div class = review-item-detail>
+							<p>コメント：<span class = "review-comment" th:text = "${review.comment}">コメント：</span></p>
+							</div>
+							
+
+							
+							<span class = "review-rating">
+							<strong>評価（5段階）：</strong>
+								<span th:each = "i : ${#numbers.sequence(1, review.rating)}">★</span>
+							</span>
+					    </div>
+					  			
+
+			        </div>
+				</div>
+			</section>	  
+					  
+			<section class = "page-bottom-actions">
+				<div class = "action-buttons">
+						<form th:action = "@{/order/single_purchase}" method = "post">
+							<input type = "hidden" name = "productId" th:value = "${product.productId}" />
+							<input type = "hidden" name = "quantity" value = "1" />
+							<input type = "submit" value = "単品購入" class = "btn btn-primary">
+						</form>
+						
+						<form th:action = "@{/reviews/new/{productId}(productId = ${product.productId})}" method = "post" class = "review-btn-form">
+							<input type = "hidden" th:name = "${_csrf.parameterName}" th:value = "${_csrf.token}">
+							<input type = "submit" th:value = "口コミ投稿" class = "btn btn-secondary">
+						</form>
+				</div>
+			</section>
+			
+			<hr>
+			
+
+		</main>
+		
+		<aside class = "sidbar">
+			<div class = "purchase-box">
+				<form th:action = "@{/order/cart_add}" method = "post">
+					
+					<input type = "submit" value = "カートに入れる" class = "btn btn-primary btn-full-width">
+					
+					<input type = "hidden" name = "productId" th:value = "${product.productId}" />	
+					<div class = "quantity-selector">	
+					    <label for = "quantity">数量：</label>
+					    <select name = "quantity" id = "quantity">
+						   <option value = "1">1</option>
+						   <option value = "2">2</option>
+						   <option value = "3">3</option>
+						   <option value = "4">4</option>
+						   <option value = "5">5</option>
+					   </select>
+					 </div>
+				</form>
+				
+				<div class = "price-info-sidebar">
+					<div class = "price-line">
+						<span class = "price-label">価格：</span>
+						<span class = "product-price-sidebar" th:text = "'&yen;' + ${#numbers.formatInteger(product.price, 1,'COMMA')}"></span>
+					</div>
+					<div class = "price-line">
+						<span class = "price-label"></span>
+						<span class = "prodct-tax-price-sidebar" th:text = "'税込価格：&yen;' + ${#numbers.formatInteger(product.taxPrice, 1,'COMMA')}">
+					</div>
+				</div>
+				<p class = "stock-info-sidebar" th:text = "|在庫数:${product.stock}|">在庫数</p>
+			</div>
+		</aside>
 	</div>
-	
-	
-	<div th:unless = "${#lists.isEmpty(reviews)}">
-		<div th:each = "review : ${reviews}">
-            <div>
-			     <strong>ユーザー名：</strong>
-			     <span th:text = "${review.dummyUserName}"></span>
-			</div>
-			<div>
-				<strong>評価：</strong>
-				<span th:each = "i:${#numbers.sequence(1,review.rating)}">★</span>
-				<span th:each = "i:${#numbers.sequence(review.rating + 1,5)}">★</span>
-			</div>
-			<div>
-				<strong>コメント：</strong>
-				<p th:text = "${review.comment}"></p>
-			</div>
-			<div>
-				<strong>投稿日時</strong>
-				<span th:text = "${#temporals.format(review.createdAt,'yyyy/MM/dd HH:mm')}"></span>
-			</div>
-		</div>
-	</div>
-	<hr>
-	
-	<form th:action = "@{/reviews/new/{productId}(productId = ${product.productId})}" method = "post">
-	<input type = "submit" value = "口コミ投稿">
-	</form>
-	
-	
-	<form th:action = "@{/order/cart_add}" method = "post">
-		<input type = "hidden" name = "productId" th:value = "${product.productId}" />
-		<input type = "hidden" name = "quantity" value = "1" />
-	    <input type = "submit" value = "カートに追加">
-	</form>
-	
-	<form th:action="@{/order/single_purchase}" method="post">
-		<input type  = "hidden" name = "productId" th:value = "${product.productId}" />
-	  <label for="quantity">数量を選択:</label>
-	  <select name="quantity" id="quantity">
-	    <option value="1">1</option>
-	    <option value="2">2</option>
-	    <option value="3">3</option>
-	    <option value="4">4</option>
-	    <option value="5">5</option>
-	  </select>
+	<footer>
+	  	<div th:replace = "common/footer :: footer"></div>
+	</footer>
 	  
-	  <input type = "submit" value = "単品購入">
-	  </form>
-	  
-	  <script th:inline = "javascript">
-	    const price = [[${product.price}]];
-		const taxPrice = [[${product.tax_price}]];
-	    const stock = [[${product.stock}]];
-		console.log("価格：", price);
-		console.log("税込価格：", taxPrice);
-		console.log("在庫数：", stock);
-	  </script>
+	<script th:src = "@{/js/ptoduct-detail.js}"></script>
 	  
 </body>
 </html>

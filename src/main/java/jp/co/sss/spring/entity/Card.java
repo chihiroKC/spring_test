@@ -7,17 +7,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "cards")
 public class Card {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_cards_gen")
-	@SequenceGenerator(name = "seq_cards_gen", sequenceName = "seq_cards", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer cardId;
 
-	@Column(name = "card_number")
+	@Column(name = "card_number", length = 15, nullable = false)
+	@Size(max = 15, message = "カード番号は15桁以内で入力してください。")
+	@Pattern(regexp = "[0-9]+", message = "カード番号は半角数字で入力してください。")
     private String cardNumber;
 	
 	@Column(name = "card_brand")
@@ -39,21 +42,15 @@ public class Card {
 			return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
 		}
 		return "****";
-	}
-
-	
+	}	
 
 	public String getCardNumber() {
 		return cardNumber;
 	}
 
-
-
 	public void setCardNumber(String cardNumber) {
 		this.cardNumber = cardNumber;
 	}
-
-
 
 	public String getCardBrand() {
 		return cardBrand;
@@ -79,17 +76,19 @@ public class Card {
 		this.order = order;
 	}
 
-
-
 	public Login getLogin() {
 		return login;
 	}
 
-
-
 	public void setLogin(Login login) {
 		this.login = login;
 	}
-    
-    
+
+	public Integer getCardId() {
+		return cardId;
+	}
+
+	public void setCardId(Integer cardId) {
+		this.cardId = cardId;
+	}
 }

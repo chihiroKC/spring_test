@@ -3,53 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <title>口コミ投稿画面</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
-	<header>
+
 	<div th:replace = "common/header :: header"></div>
-	</header>
 	
-	<h1>口コミ投稿画面</h1>
-	<form th:action = "@{/reviews/add}" method = "post" enctype = "multipart/form-data">
+	<div class = "form-container">
+		<h1>口コミ投稿画面</h1>
+		
+	<form th:action = "@{/reviews/add}" method = "post" enctype = "multipart/form-data" th:object = "${reviewForm}">
 		<input type = "hidden" name = "productId" th:value = "${productId}">
 		
-		<div>
-			ユーザー名（任意）<br>
-		    <input type = "text" name = "dummyUserName">
-		</div>
-		<div>
-			評価:<br>
-		    <div class = "star-rating">
-				<input type = "radio" id = "star5" name = "rating" value = "5"><label for = "star5">★</label>
-				<input type = "radio" id = "star4" name = "rating" value = "4"><label for = "star4">★</label>
-				<input type = "radio" id = "star3" name = "rating" value = "3" checked><label for = "star3">★</label>
-				<input type = "radio" id = "star2" name = "rating" value = "2"><label for = "star2">★</label>
-				<input type = "radio" id = "star1" name = "rating" value = "1"><label for = "star1">★</label>
-			</div>
+		<div class = "form-group">
+			<label for = "dummyUserName">ユーザー名(任意)</label>
+			<input type = "text" id = "dummyUserName" th:field = "*{dummyUserName}">
 		</div>
 		
-		<div>
-			メールアドレス:<br>
-		    <input type = "email" name = "email"required>
+		<div class = "form-group">
+			<label for ="email">メールアドレス</label>
+			<input type = "email" id = "email" th:field = "*{email}">
+			
+			<div class = "error-message" th:if = "${#fields.hasErrors('email')}" th:errors = "*{email}"></div>
 		</div>
 		
-		<div>
-			コメント:<br>
-		    <textarea name = "comment"></textarea>
-		</div>
+		<div class = "form-group">
+			<label>評価</label>
+		    <div class = "star-rating">	
+			  <input type = "radio" id = "star5" th:field = "*{rating}" value = "5"><label for = "star5">★</label>
+			  <input type = "radio" id = "star4" th:field = "*{rating}" value = "4"><label for = "star4">★</label>
+			  <input type = "radio" id = "star3" th:field = "*{rating}" value = "3"><label for = "star3">★</label>
+			  <input type = "radio" id = "star2" th:field = "*{rating}" value = "2"><label for = "star2">★</label>
+			  <input type = "radio" id = "star1" th:field = "*{rating}" value = "1"><label for = "star1">★</label>	
+		   </div>
 		
-		<div>
-			Choose file<br>
-			<input type = "file" name = "reviewImgPath" accept = "image/*">
-		</div>
-		
-		<div>
-		    <input type = "submit" value = "投稿">
-		</div>
+		   <div class = "error-message" th:if = "${#fields.hasErrors('rating')}" th:errors = "*{rating}"></div>
+	    </div>
+	
+	<div class = "form-group">
+		<label for = "comment">コメント(必須)</label>
+		<textarea id = "comment" th:field = "*{comment}" rows = "5"></textarea>
+		<div class  = "error-message" th:if = "${#fields.hasErrors('comment')}" th:errors = "*{comment}"></div>
+	</div>
+	<div>
+		Choose file<br>
+		<input type = "file" name = "reviewImgPath" accept = "image/*">
+	</div>
+			
+	<div class = "form-actions-center">
+		<input type = "submit" value = "投稿" class = "btn btn-primary">
+	</div>
 	</form>
+	</div>
 
 	
 	
-	
+		<div th:replace = "common/footer :: footer"></div>
+
 </body>
 </html>

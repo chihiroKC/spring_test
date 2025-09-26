@@ -3,26 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
   <div th:fragment = "header">
-   <header>
-	<h1>Cytec.EC</h1>
+   <header id = "header" th:fragment = "header">
+	
+	<div class = "header-left">
+	 <h1>Cytech.EC</h1>
 
-	<form th:action = "@{/search}" method = "get">
-		<input type = "text" name = "keyword" placeholder = "商品名">
-		<button type = "submit">検索</button>
-	</form>
+
+	<form th:action = "@{/search}" method = "get" class = "search-form">
+			<input type = "text" name = "keyword" placeholder = "商品名">
 	
-	<a th:href = "@{/mypage}">マイページ</a>
+
+			<select name = "categoryId">
+				<option value = "">すべてのカテゴリ</option>
+				<option th:each = "category : ${categories}"
+				   th:value = "${category.categoryId}"
+				   th:text = "${category.categoryName}">
+			   カテゴリ名
+			   </option>
+			</select>
+			<button type = "submit" class = "search-btn">検索</button>
+		</form>
+	</div>
 	
-	<span th:if = "${user_name != null}">
-		<strong th:text = "${user_name}"></strong>
-	</span>
+	<div class = "header-right">
+	 <a th:href = "@{/mypage}" class = "btn-mypage">マイページ</a>
 	
-	<form th:action = "@{/logout}" method = "post" style = "display:inline;">
-		<button type = "submit">ログアウト</button>
-	</form>
+	 <div class = "user-info">
+	  <span th:if = "${user_name != null}">
+		ユーザー名：<strong th:text = "${user_name}"></strong>
+	  </span>
+	
+	  <form th:action = "@{/logout}" method = "post">
+		<button type = "submit" id = "logout-btn">ログアウト</button>
+	  </form>
+	 </div>
+	</div>
    </header>
   </div>
 </body>

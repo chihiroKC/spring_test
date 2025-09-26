@@ -3,45 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <title>購入完了画面</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
-	<header>
-	<div th:replace = "common/header :: header"></div>
-	</header>
 
-		<h1>購入完了画面</h1>
-		<h1>注文完了</h1>
-		
-		<table>
-			   <thead>
-			        <tr>
-			            <th>商品画像</th>
-			            <th>商品名</th>
-			            <th>数量</th>
-			            <th>税込価格</th>
-			        </tr>
-			   </thead>
-			   <tbody>
-			        <tr th:each="order : ${orders}">
-			            <td>
-							<img th:if = "${order.displayImgPath != null}"
-							     th:src  = "@{${order.displayImgPath}}" alt = "商品画像" width = "100">
-						</td>
-			            <td th:text="${order.displayName}"></td>
-			            <td th:text="${order.quantity}"></td>
-			            <td th:text="${order.product.taxPrice}"></td>
-			        </tr>
-			   </tbody>
-		</table>
-		
-		<br>
-		<div>
-			<strong>配送先住所</strong>
-			<span th:text = "${#lists.isEmpty(orders) ? '' : orders.get(0).login.address}"></span>
+	<div th:replace = "common/header :: header"></div>
+
+	<div class = "order-complete-container">
+		<div class = "page-title-container">
+			<h1>購入完了画面</h1>
+			<h2 class = "order-status">注文完了</h2>
 		</div>
-		<br>
+		
+		<div class = "ordered-items-list">
+			<div class = "ordered-item-card" th:each = "order : ${orders}">
+				<img th:if = "${order.displayImgPath != null}"
+				     th:src = "@{${order.displayImgPath}}" alt = "商品画像" width = "120">
+			
+			<div class = "item-details">
+				<div class = "item-detail-row">
+					<strong>商品名：</strong>
+					<span th:text = "${order.displayName}"></span>
+				</div>
+				<div class = "item-detail-row">
+					<strong>数量：</strong>
+					<span th:text = "${order.quantity}"></span>
+				</div>
+				<div class = "item-detail-row">
+					<strong>税込価格：</strong>
+					<span th:text = "${#numbers.formatInteger(order.totalAmount, 1, 'COMMA')} + '円'"></span>
+				</div>
+				<div class = "item-detail-row">
+					<strong>住所</strong>
+					<span th:text = "${login.address} + '' + ${login.apartment}"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class = "actions-container">
 		<form th:action = "@{/top}" method = "get">
-			<button type = "submit">TOP画面に戻る</button>
+			<button type = "submit" class = "btn btn-primary">TOP画面に戻る</button>
 		</form>
+	</div>
+    </div>		
+		
+			<div th:replace = "common/footer :: footer"></div>
+
 </body>
 </html>

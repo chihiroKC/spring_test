@@ -16,14 +16,14 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
     http
-    .authorizeHttpRequests(auth -> auth
+    .authorizeHttpRequests(authz -> authz
             .requestMatchers(
             		"/register", "/doRegister", 
             		"/login", "/doLogin",
             		"/css/**","/js/**"
             	).permitAll() 
             .requestMatchers("/order/**").authenticated()
-            .anyRequest().authenticated() 
+            .anyRequest().authenticated() //一時的に認証OFF　.authenticated→CSS適用後これに変更
         )
         .formLogin(form -> form
             .loginPage("/login")

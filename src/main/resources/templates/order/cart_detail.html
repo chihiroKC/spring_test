@@ -3,38 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <title>カート詳細画面</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
-	<header>
+
 	<div th:replace = "common/header :: header"></div>
-	</header>
+
+<div class = "page-container">	
+	<main class = "main-content">
+		<h1>カート詳細画面</h1>
+		
+		<div th:if = "${#lists.isEmpty(orders)}">
+			<p>カートに商品がありません。</p>
+		</div>
+		
+		<div th:unless = "${#lists.isEmpty(orders)}">
+			<div class = "cart-item" th:each = "order:${orders}">
+				<div class = "cart-item-image">
+					<img th:if = "${order.product != null}" th:src = "@{${order.product.imgPath}}" alt = "商品画像">
+				</div>
+				
+				<div class = "cart-item-details">
+					<div class = "cart-item-name" th:text = "${order.product != null ? order.product.name : '不明な商品'}">商品名：</div>
+				
+				
+				<div class = "cart-item-actions">
+					<div class = "delete-form-container">
+					<form th:action = "@{/order/remove}" method="post" class = "delete-form-grid">
+						<input type = "hidden" name = "orderId" th:value = "${order.orderId}">
+
+						<div class = "quantity-label">
+							数量：<span th:text = "${order.quantity}"></span>個
+						</div>
+						
+						<input type = "number" name = "removeQuantity" min = "1" max = "${order.quantity}" value = "1" class = "quantity-input"> 
+
+						<button type = "submit" class = "btn btn-danger">削除</button>
+					</form>
+					</div>
+				</div>
+				
+					<div class = "cart-item-price" th:text = "'価格：' + '¥' + ${#numbers.formatInteger(order.totalAmount, 1, 'COMMA')}"></div>
+					<div class = "cart-item-price" th:text = "'消費税込み金額：' + '¥' + ${#numbers.formatInteger(order.totalAmountWithTax, 1, 'COMMA')}"></div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<aside class = "sidebar" th:unless = "${#lists.isEmpty(orders)}">
+		<div class = "cart-summary">
+			<div class = "summary-item">
+				<span>個数</span>
+				<span th:text = "${totalQuantity} + '個'"></span>
+			</div>
+			
+			<div class = "summary-item">
+				<span>金額</span>
+				<span th:text = "'¥' + ${#numbers.formatInteger(subtotal, 1, 'COMMA')}"></span>
+			</div>
+			
+			<div class = "summary-total">
+				<span>消費税込み金額</span>
+				<span th:text = "'¥' + ${#numbers.formatInteger(cartTotal, 1, 'COMMA')}"></span>
+			</div>
+			
+			<form th:action = "@{/order/order_detail}" method="get">
+				<button type="submit" class = "btn btn-primary btn-full-width">レジに進む</button>
+			</form>
+		</div>
+	</aside>
+</div>
 	
-	<table>
-		<tr>
-			<th>商品画像：</th>
-			<th>商品名：</th>
-			<th>個数：</th>
-			<th>消費税込み金額：</th>
-		</tr>
-		<tr th:each = "order : ${orders}">
-			<td><img th:if = "${order.product != null}" th:src = "@{${order.product.imgPath}}" alt = "商品画像" width = "100"></td>
-			<td th:text = "${order.product != null ? order.product.name : '不明な商品'}"></td>
-			<td th:text = "${order.product.name}"></td>
-			<td>
-				<span th:text = "${order.quantity}"></span>
-				<form th:action = "@{/order/remove}" method = "post" style = "display:inline;">
-					<input type = "hidden" name = "orderId" th:value = "${order.orderId}">
-					<input type = "number" name = "removeQuantity" min = "1" max = "${order.quantity}" value = "1"> 
-					<button type = "submit">削除</button>
-				</form>
-			</td>
-			<td th:text="${order.totalAmountWithTax}"></td>
-		</tr>
-	</table>
-	
-	<form th:action = "@{/order/check}" method = "get">
-		<button type = "submit">レジに進む</button>
-	</form>
-	
+		<div th:replace = "common/footer :: footer"></div>
+
 </body>
 </html>

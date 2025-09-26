@@ -20,7 +20,6 @@ public class RegisterForm {
 	@NotBlank(message = "パスワード(確認用)を入力してください。")
 	private String confirmPassword;
 	
-	private String phone;
 	private String address;
 	
 	
@@ -47,12 +46,6 @@ public class RegisterForm {
 	}
 	public void setConfirmPassword(String confirmPassword) {
 		this.confirmPassword = confirmPassword;
-	}
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
 	}
 	public String getAddress() {
 		return address;

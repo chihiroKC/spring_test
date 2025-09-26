@@ -3,39 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <title>カート追加画面</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
-	<header>
 	<div th:replace = "common/header :: header"></div>
-	</header>
-
-	<h1>カート追加画面</h1>
 	
-	<table>
-		<tr>
-			<th>商品画像：</th>
-			<th>商品名：</th>
-			<th>個数：</th>
-			<th>合計金額：</th>
-		</tr>
-		<tr th:each = "order : ${orders}">
-			<td><img th:src = "@{${order.product.imgPath}}" alt = "商品画像" width = "100"></td>
-			<td th:text = "${order.product.name}"></td>
-			<td th:text = "${order.quantity}"></td>
-			<td th:text = "${order.totalAmount}"></td>
-		</tr>
-	</table>
+	<div class = "cart-add-container">
+		<h1>カート追加画面</h1>
+		
+		<div th:if = "${successMessage}" class = "alert alert-success" role = "alert">
+			<p th:text = "${successMessage}"></p>
+		</div>
+		
+		<div th:each = "order : ${orders}">
+			<div class = "product-display-area">
+				<div class = "product-image-wrapper">
+					<img th:src = "@{${order.product.imgPath}}" alt = "商品画像">
+				</div>
+				
+				<div class = "product-info-wrapper">
+					<div class = "info-item">
+						<span class = "info-label">商品名：</span>
+						<span class = "info-value" th:text = "${order.product.name}"></span>
+					</div>
+					
+					<div class = "info-item">
+						<span class = "info-label">個数：</span>
+						<span class = "info-value" th:text = "${order.quantity}"></span>
+					</div>
+					
+					<div class = "info-item">
+						<span class = "info-label">合計金額：</span>
+						<span class = "info-value" th:text = "'&yen;' + ${#numbers.formatInteger(order.totalAmount, 1, 'COMMA')}"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class = "cart-add-actions">
+			<form th:action = "@{/order/order_detail}" method = "get">
+				<button type = "submit" class = "btn btn-primary">レジに進む</button>
+			</form>
+			
+			<form th:action = "@{/order/cart_detail}" method = "get">
+				<button type = "submit" class = "btn btn-primary">カートに移動</button>
+			</form>
+			
+			<form th:action = "@{/top}" method = "get">
+				<button type = "submit" class = "btn btn-primary">TOP画面に戻る</button>
+			</form>
+		</div>
+	</div>
 	
-	<form th:action = "@{/order/check}" method = "get">
-		<button type = "submit">レジに進む</button>
-	</form>
-	
-	<form th:action = "@{/order/cart_detail}" method = "get">
-		<button type = "submit">カートに移動</button>
-	</form>
-	
-	<form th:action = "@{/top}" method = "get">
-		<button type = "submit">TOP画面に戻る</button>
-	</form>
+		<div th:replace = "common/footer :: footer"></div>
+		
 </body>
 </html>

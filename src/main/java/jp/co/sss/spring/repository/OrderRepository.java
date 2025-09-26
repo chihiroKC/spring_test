@@ -13,19 +13,19 @@ import jp.co.sss.spring.entity.Order;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer>{
 
-	List<Order> findByUserId(Integer userId);
+	List<Order> findByLoginUserId(Integer userId);
 	
-	Optional<Order> findTopByUserIdOrderByOrderIdDesc(Integer userId);
+	Optional<Order> findTopByLoginUserIdOrderByOrderIdDesc(Integer userId);
 	
-	List<Order> findByUserIdOrderByOrderIdDesc(Integer userId);
+	List<Order> findByLoginUserIdOrderByOrderIdDesc(Integer userId);
 
-	@Query("SELECT o FROM Order o JOIN FETCH o.product WHERE o.userId = :userId")
-	List<Order> findByUserIdWithProduct(@Param("userId") Integer userId);
+	@Query("SELECT o FROM Order o JOIN FETCH o.product WHERE o.login.userId = :userId")
+	List<Order> findByLoginUserIdWithProduct(@Param("userId") Integer userId);
 
-	@Query("SELECT o FROM Order o JOIN FETCH o.product WHERE o.userId = :userId ORDER BY o.id DESC")
-	List<Order> findAllByUserIdOrderByOrderIdDescWithProduct(@Param("userId") Integer userId);
+	@Query("SELECT o FROM Order o JOIN FETCH o.product WHERE o.login.userId = :userId ORDER BY o.id DESC")
+	List<Order> findAllByLoginUserIdOrderByOrderIdDescWithProduct(@Param("userId") Integer userId);
 	
-	List<Order> findByUserIdAndStatus(Integer userId, String status);
+	List<Order> findByLoginUserIdAndStatus(Integer userId, String status);
 	
-	List<Order> findByUserIdAndStatusOrderByOrderIdDesc(Integer userId, String Status);
+	List<Order> findByLoginUserIdAndStatusOrderByOrderIdDesc(Integer userId, String Status);
 }

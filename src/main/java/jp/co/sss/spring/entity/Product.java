@@ -36,6 +36,10 @@ public class Product {
 	@JoinColumn(name = "company_id")
 	private Company company;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "category_id")
+	private Category category;
+	
 	public Integer getProductId() {
 		return productId;
 	}

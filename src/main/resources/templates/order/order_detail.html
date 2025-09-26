@@ -2,43 +2,111 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>購入詳細画面</title>
+
+<link rel = "stylesheet" th:href = "@{/css/style.css}">
+
 </head>
 <body>
-	<header>
 	<div th:replace = "common/header :: header"></div>
-	</header>
 
-	<div>受け取り場所</div>
-	
-	<table>
-	<tr>
-		<th>名前：</th>
-		<th>住所：</th>
-		<th>アパート名等：</th>
-	</tr>
-	<tr>
-		<td th:text = "${login.name}"></td>
-		<td th:text = "${login.address}"></td>
-		<td th:text = "${login.apartment}"></td>
-	</tr>
-	</table>
-	
-	<table>
-	<div>お支払い情報</div>
-	<tr>
-		<th>カード番号</th>
-		<th>有効期限</th>
-	</tr>
-	
-	<tr th:each = "card : ${login.cards}">
-		<td th:text = "${card.cardNumberMasked}">**** **** **** 1234</td>
-		<td th:text = "${card.expiration}">2026-07</td>
-	</tr>
-	</table>
+	<div class = "order-form-container">
+		<h1>購入詳細画面</h1>
 
-	<form method = "post" th:action = "@{/order/check}">
-	  <input type = "submit" value = "確認">
+		<form method = "post" th:action = "@{/order/save_details}">
+			<input type = "hidden" th:name = "${_csrf.parameterName}" th:value = "${_csrf.token}"/>
+
+	
+	
+	<section class = "order-section">
+		<div>＜受け取り場所＞</div>
+		
+		<label class = "selection-label" for = "existingAddress" th:if = "${login.address !=null and !login.address.isEmpty()}">
+			<div class = "selection-card">
+				<input type = "radio" id = 	"existingAddress" name = "addressSelection" value = "existing"
+						 checked = "checked" onclick = "toggleForm('address', false)">
+				<div class = "card-content">
+					<p>名前：<span class = "title" th:text = "${login.name}"></span></p>
+					<div class = "title">住所</div>
+					<div class = "details" th:text = "${login.address}"></div>
+					<div class = "title">アパート名等</div>
+					<div class = "details" th:text = "${login.apartment}"></div>
+				</div>
+			</div>
+		</label>
+		
+		<label class = "selection-label" for = "newAddressRadio">
+			<div class = "selection-card">
+				<input type = "radio" id = "newAddressRadio" name = "addressSelection" value = "new" 
+						th:checked = "${login.address == null or login.address.isEmpty()}"
+						onclick = "toggleForm('address', true)">
+				<div class = "card-content">
+					<div class = "title">新しい住所を登録</div>
+				</div>
+			</div>
+		</label>
+		
+		<div id = "newAddressForm" style = "display: none;">
+			<label for = "newName">名前：</label>
+			<input type = "text" id = "newName" name = "newName">
+			
+			<label for = "newAddress">住所：</label>
+			<input type = "text" id = "newAddress" name = "newAddress">
+			
+			<label for = "newApartment">アパート名等：</label>
+			<input type = "text" id = "newApartment" name = "newApartment">
+		</div>
+	</section>
+	
+	<section class = "order-section">
+		<div>＜お支払い情報＞</div>
+		
+		<div th:if = "${!#lists.isEmpty(login.cards)}">
+			<div th:each = "card, iterStat : ${login.cards}">
+				<label class = "selection-label" th:for = "'card' + ${card.cardId}">
+					<div class = "selection-card">
+						<input type = "radio" th:id = "'card' + ${card.cardId}" name = "cardSelection" value = "existing"
+								  th:checked = "${iterStat.first}"
+								  onclick = "toggleForm('card',false)">
+						 <div class = "card-content">
+							<div class = "title" th:text = "'カード番号：' + ${card.cardNumberMasked}"></div>
+							<div class = "details" th:text = "'有効期限' + ${card.expiration}"></div>
+							
+							<input type = "hidden" name = "existingCardId" th:value = "${card.cardId}">
+						 </div>
+					</div>
+				</label>
+			</div>
+		</div>
+		
+		<label class = "selection-label" for = "newCardRadio">
+			<div class = "selection-card">
+				<input type = "radio" id = "newCardRadio" name = "cardSelection" value = "new"
+						th:checked = "${#lists.isEmpty(login.cards)}"
+						onclick = "toggleForm('card', true)">
+				<div class = "card-content">
+					<div class = "title">新しいカードを登録する</div>
+				</div>
+			</div>
+		</label>
+		
+		<div id = "newCardForm" style = "display:none;">
+			<label for = "newCardNumber">カード番号：</label>
+			<input type = "text" id = "newCardNumber" name = "newCardNumber" maxlength = "15">
+			<label for = "newExpiration">有効期限(MM/YY)：</label>
+			<input type = "text" id = "newExpiration" name = "newExpiration" placeholder = "MM/YY">
+		</div>
+	</section>
+	
+	<div class = "form-actions">
+		<input type = "submit" value = "確認" class = "btn btn-primary">
+	</div>
 	</form>
+	</div>
+
+	<div th:replace = "common/footer :: footer"></div>
+	
+	<script th:src = "@{/js/order-detail.js}"></script>
+
 </body>
 </html>

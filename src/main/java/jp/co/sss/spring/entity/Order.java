@@ -24,9 +24,6 @@ public class Order {
 	@SequenceGenerator(name = "seq_order_gen", sequenceName = "seq_order", allocationSize = 1)
 	@Column(name = "order_id")
 	private Integer orderId;
-
-	@Column(name = "user_id", insertable = false, updatable = false)
-	private Integer userId;
 	
 	@Column(name = "total_amount")
 	private Integer totalAmount;
@@ -50,7 +47,6 @@ public class Order {
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "saleItemId")
 	private Sale sale;
 	
-	@Transient
 	private static final BigDecimal TAX_RATE = new BigDecimal("0.1");
 
 	@Transient
@@ -62,12 +58,6 @@ public class Order {
 	}
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
-	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
 	}
 	public Integer getTotalAmount() {
 		return totalAmount;
@@ -112,11 +102,15 @@ public class Order {
 		this.sale = sale;
 	}
 	
-	public BigDecimal getTotalAmountWithTax() {
+	public Integer getTotalAmountWithTax() {
 		if (totalAmount == null) {
-			return BigDecimal.ZERO;
+			return 0;
 		}
-		return BigDecimal.valueOf(totalAmount).multiply(BigDecimal.ONE.add(TAX_RATE));
+		
+		BigDecimal amountWithTax = BigDecimal.valueOf(totalAmount)
+				.multiply(BigDecimal.ONE.add(TAX_RATE));
+		
+		return amountWithTax.intValue();
 	}
 
 
@@ -133,11 +127,12 @@ public class Order {
 	}
 	
 	public String getDisplayImgPath() {
-		if (product != null) {
-			return product.getImgPath();
-		} else if (sale != null) {
+		if (sale != null) {
 			return sale.getSaleImgPath();
+		} else if (product != null) {
+			return product.getImgPath();
 		}
 		return null;
 	}
+
 }

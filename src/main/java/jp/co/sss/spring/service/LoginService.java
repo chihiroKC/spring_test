@@ -1,7 +1,7 @@
 package jp.co.sss.spring.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.sss.spring.entity.Login;
 import jp.co.sss.spring.repository.LoginRepository;
@@ -9,13 +9,14 @@ import jp.co.sss.spring.repository.LoginRepository;
 @Service
 public class LoginService {
 	
-	@Autowired
-	LoginRepository loginrepository;
+
+	private final LoginRepository loginRepository;
 	
-	public LoginService(LoginRepository loginrepository) {
-		this.loginrepository = loginrepository;
+	public LoginService(LoginRepository loginRepository) {
+		this.loginRepository = loginRepository;
 	}
 
+	@Transactional
 	public void registerUser(Login login) {
 		String name = login.getName();
 		
@@ -23,7 +24,7 @@ public class LoginService {
 		
 		login.setNameKana(kana);
 		
-		loginrepository.save(login);
+		loginRepository.save(login);
 	}
 	
 	private String toHiragana(String input) {
