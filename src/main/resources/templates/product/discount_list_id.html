@@ -12,9 +12,8 @@
  th:data-tax-price = "${sale.product.taxPrice}"
  th:data-stock = "${sale.product.stock}">
  
-	<header>
 	<div th:replace = "common/header :: header"></div>
-	</header>
+
 
 	<div class = "page-container">
 		
@@ -123,9 +122,8 @@
 			</div>
 		</aside>
 	</div>
-	<footer>
+
 	  	<div th:replace = "common/footer :: footer"></div>
-	</footer>
 	  
 	<script th:src = "@{/js/ptoduct-detail.js}"></script>
 	  

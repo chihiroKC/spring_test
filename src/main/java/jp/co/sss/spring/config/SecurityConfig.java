@@ -23,7 +23,7 @@ public class SecurityConfig {
             		"/css/**","/js/**"
             	).permitAll() 
             .requestMatchers("/order/**").authenticated()
-            .anyRequest().authenticated() //一時的に認証OFF　.authenticated→CSS適用後これに変更
+            .anyRequest().authenticated() 
         )
         .formLogin(form -> form
             .loginPage("/login")
@@ -31,7 +31,7 @@ public class SecurityConfig {
             .usernameParameter("email")
             .passwordParameter("password")
             .defaultSuccessUrl("/top", true) 
-            .failureUrl("/login?error=true")
+            .failureUrl("/login-error")
             .permitAll()
         )
         .logout(logout -> logout
@@ -49,6 +49,8 @@ public class SecurityConfig {
 	  DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 	  provider.setUserDetailsService(userDetailsService);
 	  provider.setPasswordEncoder(passwordEncoder);
+	  
+	  provider.setHideUserNotFoundExceptions(false);
 	  
 	  return provider;
   }

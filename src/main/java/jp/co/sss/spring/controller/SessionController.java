@@ -1,10 +1,15 @@
 package jp.co.sss.spring.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +48,7 @@ public class SessionController {
 			}
 		
 		if (!form.getPassword().equals(form.getConfirmPassword())) {
-			result.rejectValue("confirmPassword", "error.confirmPassword", "パスワードが一致しません。");
+			result.rejectValue("confirmPassword", "error.confirmPassword");
 			return "session/register";
 		}
 		
@@ -58,12 +63,29 @@ public class SessionController {
 		
 		return "redirect:/login?registered";
 	}
-	
-	//ログイン
+
 	@RequestMapping(path = "/login", method = RequestMethod.GET)
-	public String doLogin() {
+	public String showLoginPage() {
 		return "session/login";
 	}
-	
 
+	@GetMapping("/login-error")
+	public String loginError(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		String errorType = "unknown";
+		
+		if(session != null) {
+			AuthenticationException ex = (AuthenticationException)
+					session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		if(ex != null) {
+			if(ex instanceof org.springframework.security.core.userdetails.UsernameNotFoundException) {
+				errorType = "notfound";
+			} else if (ex instanceof org.springframework.security.authentication.BadCredentialsException) {
+				errorType = "badcred";
+			}
+		}
+		}
+		
+		return "redirect:/login?error=" + errorType;
+	}
 }
